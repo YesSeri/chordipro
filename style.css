@@ -1,0 +1,30 @@
+#view>textarea {
+	height: 100%;
+	width: 100%;
+}
+
+#view {
+	height: 100%;
+	width: 100%;
+}
+
+#wrapper {
+	display: flex;
+	height: 100%;
+}
+
+body {
+	height: 100%;
+}
+
+html {
+	height: 90%;
+}
+
+#left-panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	max-width: 400px;
+	background-color: burlywood;
+}
