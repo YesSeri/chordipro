@@ -5,10 +5,10 @@ const fs = require('fs')
 'use strict';
 
 module.exports = class File {
-	constructor(p) {
-		this.path = p;
-		this.filename = path.basename(p);
-		this.name = path.basename(p, ".chopro");
+	constructor(myPath) {
+		this.path = myPath;
+		this.filename = path.basename(myPath);
+		this.name = path.basename(myPath, ".chopro");
 	}
 	getContent() {
 		return new Promise((resolve, reject) => {
@@ -21,8 +21,8 @@ module.exports = class File {
 
 		})
 	}
-	async toHTML() {
-		const content = await f.getContent();
+	async getContentArr() {
+		const content = await this.getContent();
 		const array = content.match(/[^\r\n]+/g);
 		const rows = array.map(row => {
 			const squareBracketsRe = /(\[.*?])/;
@@ -31,23 +31,33 @@ module.exports = class File {
 				const rowInfo = this.getRowInfo(row);
 				const chordRow = this.createChordRow(rowInfo.chords)
 				const twoRows = chordRow + "\n" + rowInfo.text + "\n";
-				return twoRows
-			} if (curlyBracketsRe.test(row)) {
+				return {
+					text: twoRows, metadata: "music"
+				}
+			} else if (curlyBracketsRe.test(row)) {
 				const inside = row.slice(1, -1);
 				const [metaCommand, text] = inside.split(":");
 				if (metaCommand.toLowerCase() === "title") {
-					const newH1 = document.createElement("h1");
-					newH1.text = text
-					return newH1
+					return {
+						text, metadata: 'title'
+					}
 				}
 				if (metaCommand.toLowerCase() === "subtitle") {
-					const newH2 = document.createElement("h2");
-					newH1.text = text
-					return newH2
+					return {
+						text, metadata: 'subtitle'
+					}
+				} else {
+					// TO be expanded with all possible metacommands
+					return {
+						text: row, metadata: 'other'
+					}
 				}
+			} else {
+				// For example text row without chords. 
+				return { text, metadata: 'unmodified' }
 			}
-		}).join("")
-		console.log(rows)
+		})
+		return rows
 	}
 	getRowInfo(row) {
 		const splits = row.split(/(\[.*?])/);
@@ -80,6 +90,8 @@ module.exports = class File {
 	}
 }
 
-const p = path.join(__dirname, "songs", "Hallelujah.chopro")
-const f = new File(p)
-f.toHTML();
+
+// const p = path.join(__dirname, "songs", "Hallelujah.chopro")
+// const f = new File(p.toString())
+// f.getContentArr().then(arr => {
+// })

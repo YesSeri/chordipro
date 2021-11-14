@@ -1,9 +1,13 @@
-#view>textarea {
+#view {
+	display: none;
+}
+
+#main-panel>textarea {
 	height: 100%;
 	width: 100%;
 }
 
-#view {
+#main-panel {
 	height: 100%;
 	width: 100%;
 }
@@ -27,4 +31,20 @@ html {
 	justify-content: space-between;
 	max-width: 400px;
 	background-color: burlywood;
+}
+
+#save-load-div {
+	display: flex;
+}
+
+#save-load-div>* {
+	width: 50%;
+}
+
+button {
+	width: 100%;
+}
+
+* {
+	font-family: monospace;
 }
