@@ -30,9 +30,8 @@ module.exports = class File {
 			if (squareBracketsRe.test(row)) {
 				const rowInfo = this.getRowInfo(row);
 				const chordRow = this.createChordRow(rowInfo.chords)
-				const twoRows = chordRow + "\n" + rowInfo.text + "\n";
 				return {
-					text: twoRows, metadata: "music"
+					text: rowInfo.text, chords: chordRow, metadata: "music"
 				}
 			} else if (curlyBracketsRe.test(row)) {
 				const inside = row.slice(1, -1);
@@ -54,7 +53,7 @@ module.exports = class File {
 				}
 			} else {
 				// For example text row without chords. 
-				return { text, metadata: 'unmodified' }
+				return { text: row, metadata: 'unmodified' }
 			}
 		})
 		return rows

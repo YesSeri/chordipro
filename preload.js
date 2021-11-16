@@ -36,16 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	const saveButton = document.getElementById("save-button");
 	saveButton.addEventListener("click", saveFile)
-	function saveFile() {
-		const editor = document.getElementById("editor");
-		const content = editor.value;
-		fs.writeFile(currentFile.path, content, function (err) {
-			if (err) {
-				return console.log(err);
-			}
-			console.log("The file was saved!");
-		});
-	}
+
 	const modeButton = document.getElementById("mode-button");
 	modeButton.addEventListener("click", switchMode);
 	function switchMode() {
@@ -61,6 +52,17 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 
 })
+function saveFile() {
+	const editor = document.getElementById("editor");
+	const content = editor.value;
+	fs.writeFile(currentFile.path, content, function (err) {
+		if (err) {
+			return console.log(err);
+		}
+		console.log("The file was saved!");
+	});
+}
+
 function openEditor(currentFile) {
 	openFile(currentFile)
 	const editor = document.getElementById("editor");
@@ -78,14 +80,15 @@ function openFile(file) {
 }
 
 function openView() {
+	saveFile(currentFile);
 	const view = document.getElementById("view");
 	const editor = document.getElementById("editor");
 	view.style.display = "block"
 	editor.style.display = "none"
 
-	contentArrToHTML().then(div => {
+	contentArrToHTML().then(el => {
 		view.innerHTML = "";
-		view.appendChild(div);
+		view.appendChild(el);
 	});
 }
 
@@ -94,12 +97,43 @@ async function contentArrToHTML() {
 	const div = document.createElement('div')
 	const arr = await currentFile.getContentArr();
 
-	console.log(arr)
 	arr.forEach(el => {
-		console.log(el.text)
-		const p = document.createElement('p');
-		p.innerText = el.text;
-		div.appendChild(p)
+		switch (el.metadata) {
+			case "music":
+				const musicDiv = document.createElement('div');
+				const chordsHTML = document.createElement('p');
+				const textHTML = document.createElement('p');
+				chordsHTML.classList.add("chords")
+				textHTML.classList.add("lyrics")
+				chordsHTML.innerText = el.chords;
+				textHTML.innerText = el.text;
+				musicDiv.appendChild(chordsHTML);
+				musicDiv.appendChild(textHTML);
+				div.appendChild(musicDiv);
+				break;
+			case "title":
+				const h1 = document.createElement('h1');
+				h1.innerText = el.text;
+				div.appendChild(h1);
+				break;
+			case "subtitle":
+				const h2 = document.createElement('h2');
+				h2.innerText = el.text;
+				div.appendChild(h2);
+				break;
+			case "other":
+				const otherMeta = document.createElement('p');
+				otherMeta.innerText = el.text;
+				// h3.classList.add("otherMeta")
+				div.appendChild(otherMeta);
+				break;
+			case "unmodified":
+				const p2 = document.createElement('p');
+				p2.innerText = el.text;
+				div.appendChild(p2);
+				break;
+
+		}
 	});
 	return div;
 }

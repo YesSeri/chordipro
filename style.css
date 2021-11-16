@@ -2,9 +2,14 @@
 	display: none;
 }
 
+.boxsizingBorder {
+	box-sizing: border-box;
+}
+
 #main-panel>textarea {
 	height: 100%;
 	width: 100%;
+	resize: none;
 }
 
 #main-panel {
@@ -19,10 +24,16 @@
 
 body {
 	height: 100%;
+	margin: 0;
 }
 
 html {
-	height: 90%;
+	height: 100%;
+}
+
+#left-panel>div {
+	cursor: pointer;
+	display: grid;
 }
 
 #left-panel {
@@ -45,6 +56,14 @@ button {
 	width: 100%;
 }
 
-* {
+#view {
 	font-family: monospace;
+}
+
+.chords {
+	margin-bottom: 0;
+}
+
+.lyrics {
+	margin-top: 0;
 }
