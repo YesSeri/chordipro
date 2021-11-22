@@ -1,7 +1,7 @@
 const squareBracketsRe = /\[.*?]/;
 
-function parseComment() {
-	return "";
+function parseDevComment() {
+	return null;
 }
 function replaceFirstOccurence(text, searchPhrase) {
 	return text.replace(searchPhrase, "")
@@ -24,9 +24,34 @@ function getNthChordAndSpaces(text, n) {
 	}
 	// The match value looks like this [G]. We remove the square brackets with the slice. 
 	const chord = matches[0].slice(1, -1)
-	const spaces = matches.index
-	return { chord: chord, spaces }
+	const position = matches.index
+	return { chord, position }
 }
+function getChordAndSpaces(text) {
+	let i = 1;
+	let chordSpaceArr = [];
+	while (true) {
+		const chordInfo = getNthChordAndSpaces(text, i);
+		i++;
+		if (!chordInfo) {
+			break;
+		}
+		chordSpaceArr.push(chordInfo);
+	}
+	return chordSpaceArr
+}
+function getLyrics(text) {
+	// Removes all chords from lyrics
+	return text.replace(/\[.*?]/g, '');
+}
+function getMusicLine(line) {
+	return {
+		acc: getChordAndSpaces(line), lyrics: getLyrics(line)
+	}
+
+
+}
+
 
 function splitByNewline(text) {
 	return text.replace(/\r/g, "").split(/\n/);
@@ -38,8 +63,10 @@ function splitByNewline(text) {
 // - song text and chords | let it b[D]e
 // - song text no chords, a capella for example | let it be
 function analyzeLine(line) {
-	console.log(line)
-	if (line.trim() === '' || line.trim().charAt(0) === '#') {
+	if (line.trim().charAt(0) === '#') {
+		return "devComment"
+	}
+	if (line.trim() === '') {
 		return "empty"
 	}
 	if (line.trim().charAt(0) === '{') {
@@ -50,43 +77,143 @@ function analyzeLine(line) {
 	}
 	return 'acapella'
 }
-function analyzeDeclaration(line) {
 
+function getDeclarationCommand(line) {
+	const [command,] = line.slice(1, -1).split(':');
+	if (command === 'soc' || command === 'start_of_chorus') {
+		return 'start_of_chorus';
+	}
+	if (command === 'eoc' || command === 'end_of_chorus') {
+		return 'end_of_chorus';
+	}
+	if (command === 'title') {
+		return 'title';
+	}
+}
+function getDeclarationArguments(line) {
+	// slice removes the square brackets.
+	const [, argument] = line.slice(1, -1).split(':');
+	return argument.trim();
+}
+function parseDeclarationSubtype(line) {
+	return {
+		command: getDeclarationCommand(line),
+		argument: getDeclarationArguments(line)
+	}
 }
 function analyzeChord() {
 
+}
+
+
+function htmlInfo(line, modifiers) {
+
+	let modArr = [];
+	if (modifiers.chorus) {
+		modArr.push('chorus')
+	}
+	// const music = {
+	// 	toDisplay: {
+	// 		acc: [
+	// 			{ chord: "Em", position: 3 },
+	// 			{ chord: "D", position: 19 },
+	// 		],
+	// 		lyrics: `Time to say goodbye`
+	// 	},
+	// 	type: 'music',
+	// 	modifiers: ['chorus']
+	// }
+
+	const type = analyzeLine(line);
+	if (type === 'music') {
+		return {
+			toDisplay: getMusicLine(line),
+			type,
+			modifiers: [...modArr]
+		}
+	}
+	if (type === 'declaration') {
+		const subtype = parseDeclarationSubtype(line)
+		return {
+			type, subtype
+		}
+	}
+	if (type === "acapella") {
+		return {
+			toDisplay: {
+				lyrics: line
+			},
+			type,
+			modifiers: [...modArr]
+		}
+	}
+	if (type === "devComment") {
+
+	}
+	if (type === "empty") {
+		return {
+			type,
+			modifiers: [...modArr]
+		}
+	}
+
+}
+// parseSong needs to contain modifiers for if it currently is a chorus and other things that will later affect how the text should be displayed. 
+function parseSong(song) {
+	let modifiers = { chorus: false }
+	const arr = splitByNewline(song);
+	const infoArr = arr.filter(el => el.type !== 'devComment')
+		.map(el => {
+			const info = htmlInfo(el, modifiers);
+			if (info?.subtype?.command === "start_of_chorus") {
+				modifiers.chorus = true;
+			}
+			if (info?.subtype?.command === "end_of_chorus") {
+				modifiers.chorus = false;
+			}
+			return info
+		})
+	return infoArr
 }
 // All info needed for electron to then turn this info into html. Each line will be a new el in array. So final product delievered from parseSong() will be an array of htmlInfo.
 // Needs metaInfo and what to display. The metainfo will affect which class gets assigned. The displayText is the defactor innerText.
 
 // Examples
 const music = {
-	displayText: `
- 	 Em				  Dm
- 	Time to say goodbye`,
-	info: {
-		type: 'music',
-		modifiers: ['chorus']
+	toDisplay: {
+		acc: [
+			{ chord: "Em", position: 3 },
+			{ chord: "D", position: 19 },
+		],
+		lyrics: `Time to say goodbye`
 	},
+	type: 'music',
+	modifiers: ['chorus']
+}
+const title = {
+	type: 'declaration', subtype: { command: 'title', argument: 'Bohemian Rhapsody' }
 }
 const chorusInit = {
-	displayText: null,
-	info: {
-		type: 'declaration',
-	},
+	type: 'declaration', subtype: { command: 'start_of_chorus', argument: "" },
 }
-const functionalComment = {
-	displayText: 'Chorus',
-	info: {
-		type: 'functionalComment',
-	},
+const comment = {
+	toDisplay: 'Chorus',
+	type: 'comment',
 }
+const exportedForTesting = {
+	parseDevComment,
+	replaceFirstOccurence,
+	removeChordNTimes,
+	getNthChordAndSpaces,
+	splitByNewline,
+	analyzeLine,
+	getLyrics,
+	getChordAndSpaces,
+	parseSong,
+	getDeclarationCommand,
+	getDeclarationArguments,
+	parseDeclarationSubtype,
+	getMusicLine,
 
-function htmlInfo() {
-
 }
-// parseSong needs to contain modifiers for if it currently is a chorus and other things that will later affect how the text should be displayed. 
-function parseSong(song) {
-	const arr = splitByNewline(song);
-}
-module.exports = { parseComment, replaceFirstOccurence, removeChordNTimes, getNthChordAndSpaces, splitByNewline, analyzeLine }
+module.exports = { exportedForTesting, parseSong }
