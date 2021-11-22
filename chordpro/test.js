@@ -24,6 +24,17 @@ test('returns lyrics and chord info', () => {
 		],
 		lyrics: `Let it be, let it be`
 	});
+	// When rendering this to html in electron you will need to account for the fact that chords will overlap two times. 
+	// The Em and Gm and the Dm and Cm.
+	expect(parser.getMusicLine('Wh[E][Am]o y[Dm]o[Am]u')).toStrictEqual({
+		acc: [
+			{ chord: "E", position: 2 },
+			{ chord: "am", position: 2 },
+			{ chord: "Dm", position: 5 },
+			{ chord: "Am", position: 6 },
+		],
+		lyrics: `Who you`
+	});
 });
 test('extracts first chord after index, along with number of chars passed.', () => {
 	expect(parser.getNthChordAndSpaces(chordproData, 1)).toStrictEqual({ chord: "Em", position: 8 });
@@ -52,18 +63,21 @@ test('analyzes line to see if it declaration, comment, empty line, lyrics with c
 	const split = parser.splitByNewline(chordproMinimalSong);
 	expect(parser.analyzeLine(split[0])).toBe('declaration');
 	expect(parser.analyzeLine(split[1])).toBe('empty');
-	expect(parser.analyzeLine(split[2])).toBe('empty');
+	expect(parser.analyzeLine(split[2])).toBe('devComment');
 	expect(parser.analyzeLine(split[3])).toBe('music');
 	expect(parser.analyzeLine(split[4])).toBe('acapella');
 })
 test('test if you can get declaration command and declaration argument, and if you can parse a declaration and return object', () => {
-	expect(parser.getDeclarationCommand('{title: Let It Be')).toBe('title');
+	expect(parser.getDeclarationCommand('{title: Let It Be}')).toBe('title');
+	expect(parser.getDeclarationCommand('{subtitle: Paul McCartney}')).toBe('subtitle');
+	expect(parser.getDeclarationArguments('{subtitle: Paul McCartney}')).toBe('Paul McCartney');
 	expect(parser.getDeclarationCommand('{soc}')).toBe('start_of_chorus');
 	expect(parser.getDeclarationArguments('{soc: final}')).toBe('final');
 	expect(parser.parseDeclarationSubtype('{title: Let It Be}')).toStrictEqual({
 		command: 'title', argument: 'Let It Be'
 	});
 });
+
 test('test if song can be parsed and return valid arr', () => {
 	expect(parser.parseSong(`{title:Let it Be}`)).toStrictEqual(
 		[{
@@ -71,7 +85,7 @@ test('test if song can be parsed and return valid arr', () => {
 		}]
 	);
 	expect(parser.parseSong(chordproData)).toStrictEqual([{
-		toDisplay: {
+		content: {
 			acc: [
 				{ chord: "Em", position: 8 },
 				{ chord: "D", position: 19 },
@@ -81,6 +95,7 @@ test('test if song can be parsed and return valid arr', () => {
 		type: 'music',
 		modifiers: []
 	}]);
+
 	const song = parser.parseSong(chordproMinimalSong);
 	expect(song[0]).toStrictEqual(
 		{
@@ -97,7 +112,13 @@ test('test if song can be parsed and return valid arr', () => {
 	);
 	expect(song[2]).toStrictEqual(
 		{
-			toDisplay: {
+			type: 'devComment',
+			content: `This is a comment`
+		},
+	);
+	expect(song[3]).toStrictEqual(
+		{
+			content: {
 				acc: [
 					{ chord: "Cm", position: 1 },
 					{ chord: "G", position: 4 },
@@ -109,9 +130,9 @@ test('test if song can be parsed and return valid arr', () => {
 			modifiers: []
 		}
 	);
-	expect(song[3]).toStrictEqual(
+	expect(song[4]).toStrictEqual(
 		{
-			toDisplay: {
+			content: {
 				lyrics: `Hallelujah`
 			},
 			type: 'acapella',

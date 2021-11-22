@@ -79,7 +79,7 @@ function analyzeLine(line) {
 }
 
 function getDeclarationCommand(line) {
-	const [command,] = line.slice(1, -1).split(':');
+	const [command] = line.slice(1, -1).split(':');
 	if (command === 'soc' || command === 'start_of_chorus') {
 		return 'start_of_chorus';
 	}
@@ -87,7 +87,10 @@ function getDeclarationCommand(line) {
 		return 'end_of_chorus';
 	}
 	if (command === 'title') {
-		return 'title';
+		return command
+	}
+	if (command === 'subtitle') {
+		return command
 	}
 }
 function getDeclarationArguments(line) {
@@ -113,7 +116,7 @@ function htmlInfo(line, modifiers) {
 		modArr.push('chorus')
 	}
 	// const music = {
-	// 	toDisplay: {
+	// 	content: {
 	// 		acc: [
 	// 			{ chord: "Em", position: 3 },
 	// 			{ chord: "D", position: 19 },
@@ -127,7 +130,7 @@ function htmlInfo(line, modifiers) {
 	const type = analyzeLine(line);
 	if (type === 'music') {
 		return {
-			toDisplay: getMusicLine(line),
+			content: getMusicLine(line),
 			type,
 			modifiers: [...modArr]
 		}
@@ -140,7 +143,7 @@ function htmlInfo(line, modifiers) {
 	}
 	if (type === "acapella") {
 		return {
-			toDisplay: {
+			content: {
 				lyrics: line
 			},
 			type,
@@ -148,7 +151,10 @@ function htmlInfo(line, modifiers) {
 		}
 	}
 	if (type === "devComment") {
-
+		return {
+			type,
+			content: line.slice(1).trim()
+		}
 	}
 	if (type === "empty") {
 		return {
@@ -180,7 +186,7 @@ function parseSong(song) {
 
 // Examples
 const music = {
-	toDisplay: {
+	content: {
 		acc: [
 			{ chord: "Em", position: 3 },
 			{ chord: "D", position: 19 },
@@ -197,7 +203,7 @@ const chorusInit = {
 	type: 'declaration', subtype: { command: 'start_of_chorus', argument: "" },
 }
 const comment = {
-	toDisplay: 'Chorus',
+	content: 'Chorus',
 	type: 'comment',
 }
 const exportedForTesting = {
