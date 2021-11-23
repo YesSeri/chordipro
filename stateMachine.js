@@ -1,17 +1,18 @@
-const { toViewMode, toEditorMode } = require('./mutateView')
+// const { toViewMode, toEditorMode } = require('./mutateView')
 const machine = {
 	state: 'EDITOR',
 	transitions: {
 		EDITOR: {
 			switch() {
 				this.state = 'VIEW'
-				toViewMode();
+				// toViewMode();
 			}
+
 		},
 		VIEW: {
 			switch() {
 				this.state = 'EDITOR';
-				toEditorMode();
+				// toEditorMode();
 			},
 		},
 	},
@@ -25,5 +26,4 @@ const machine = {
 		}
 	},
 };
-const modeStateMachine = Object.create(machine);
-module.exports = modeStateMachine;
+// module.exports = modeStateMachine;
