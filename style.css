@@ -24,8 +24,13 @@ body {
 }
 
 html {
-	text-align: center;
 	height: 100%;
+}
+
+.comment {
+	background-color: black;
+	color: white;
+	padding: 0 10px;
 }
 
 #side-panel {

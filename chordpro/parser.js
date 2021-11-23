@@ -92,6 +92,9 @@ function getDeclarationCommand(line) {
 	if (command === 'subtitle') {
 		return command
 	}
+	if (command === 'c' || command === 'comment') {
+		return 'comment'
+	}
 }
 function getDeclarationArguments(line) {
 	// slice removes the square brackets.

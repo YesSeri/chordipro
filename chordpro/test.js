@@ -70,8 +70,9 @@ test('analyzes line to see if it declaration, comment, empty line, lyrics with c
 test('test if you can get declaration command and declaration argument, and if you can parse a declaration and return object', () => {
 	expect(parser.getDeclarationCommand('{title: Let It Be}')).toBe('title');
 	expect(parser.getDeclarationCommand('{subtitle: Paul McCartney}')).toBe('subtitle');
-	expect(parser.getDeclarationArguments('{subtitle: Paul McCartney}')).toBe('Paul McCartney');
 	expect(parser.getDeclarationCommand('{soc}')).toBe('start_of_chorus');
+	expect(parser.getDeclarationCommand('{c: Acapella}')).toBe('comment');
+	expect(parser.getDeclarationArguments('{subtitle: Paul McCartney}')).toBe('Paul McCartney');
 	expect(parser.getDeclarationArguments('{soc: final}')).toBe('final');
 	expect(parser.parseDeclarationSubtype('{title: Let It Be}')).toStrictEqual({
 		command: 'title', argument: 'Let It Be'
