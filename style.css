@@ -25,12 +25,17 @@ body {
 
 html {
 	height: 100%;
+	text-align: center;
 }
 
 .comment {
 	background-color: black;
 	color: white;
 	padding: 0 10px;
+}
+
+.chorus {
+	border-left: solid 3px black;
 }
 
 #side-panel {
@@ -45,6 +50,7 @@ html {
 #main-panel {
 	width: 100%;
 	border: solid 1px red;
+	text-align: left;
 }
 
 #wrapper {

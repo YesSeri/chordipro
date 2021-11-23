@@ -3,19 +3,21 @@ const { parseSong } = require('./chordpro/parser')
 module.exports = function (content) {
 	const songArr = parseSong(content);
 
-	const htmlArr = songArr.filter(el => el.type != 'devComment').map(el => {
-		switch (el.type) {
-			case 'declaration':
-				return handleDeclaration(el)
-			case 'music':
-				return handleMusic(el)
-			case 'empty':
-				return handleEmpty(el)
-			case 'acapella':
-				return handleAcapella(el)
-		}
-	});
+	const htmlArr = songArr.filter(el => el.type !== 'devComment' && el?.subtype?.command !== 'start_of_chorus' && el?.subtype?.command !== 'end_of_chorus')
+		.map(el => {
+			switch (el.type) {
+				case 'declaration':
+					return handleDeclaration(el)
+				case 'music':
+					return handleMusic(el)
+				case 'empty':
+					return handleEmpty(el)
+				case 'acapella':
+					return handleAcapella(el)
+			}
+		});
 
+	console.log(htmlArr)
 	let HTML = document.createElement('div');
 	htmlArr.forEach(el => {
 		HTML.appendChild(el);
@@ -44,8 +46,6 @@ function handleDeclaration(el) {
 				span.innerText = el.subtype.argument
 				return span;
 			}
-		default:
-			break;
 	}
 }
 function handleMusic(el) {
@@ -62,6 +62,9 @@ function handleMusic(el) {
 	const div = document.createElement('div');
 	div.appendChild(chordHTML)
 	div.appendChild(lyricHTML)
+	if (el.modifiers.includes('chorus')) {
+		div.classList.add('chorus')
+	}
 	return div;
 }
 function createChordHTML(acc) {

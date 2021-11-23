@@ -89,8 +89,8 @@ function getDeclarationCommand(line) {
 	if (command === 'title') {
 		return command
 	}
-	if (command === 'subtitle') {
-		return command
+	if (command === 'subtitle' || command === 'st') {
+		return 'subtitle'
 	}
 	if (command === 'c' || command === 'comment') {
 		return 'comment'
@@ -99,6 +99,9 @@ function getDeclarationCommand(line) {
 function getDeclarationArguments(line) {
 	// slice removes the square brackets.
 	const [, argument] = line.slice(1, -1).split(':');
+	if (!argument) {
+		return null;
+	}
 	return argument.trim();
 }
 function parseDeclarationSubtype(line) {
