@@ -115,17 +115,6 @@ function htmlInfo(line, modifiers) {
 	if (modifiers.chorus) {
 		modArr.push('chorus')
 	}
-	// const music = {
-	// 	content: {
-	// 		acc: [
-	// 			{ chord: "Em", position: 3 },
-	// 			{ chord: "D", position: 19 },
-	// 		],
-	// 		lyrics: `Time to say goodbye`
-	// 	},
-	// 	type: 'music',
-	// 	modifiers: ['chorus']
-	// }
 
 	const type = analyzeLine(line);
 	if (type === 'music') {
@@ -168,44 +157,43 @@ function htmlInfo(line, modifiers) {
 function parseSong(song) {
 	let modifiers = { chorus: false }
 	const arr = splitByNewline(song);
-	const infoArr = arr.filter(el => el.type !== 'devComment')
-		.map(el => {
-			const info = htmlInfo(el, modifiers);
-			if (info?.subtype?.command === "start_of_chorus") {
-				modifiers.chorus = true;
-			}
-			if (info?.subtype?.command === "end_of_chorus") {
-				modifiers.chorus = false;
-			}
-			return info
-		})
+	const infoArr = arr.map(el => {
+		const info = htmlInfo(el, modifiers);
+		if (info?.subtype?.command === "start_of_chorus") {
+			modifiers.chorus = true;
+		}
+		if (info?.subtype?.command === "end_of_chorus") {
+			modifiers.chorus = false;
+		}
+		return info
+	})
 	return infoArr
 }
 // All info needed for electron to then turn this info into html. Each line will be a new el in array. So final product delievered from parseSong() will be an array of htmlInfo.
 // Needs metaInfo and what to display. The metainfo will affect which class gets assigned. The displayText is the defactor innerText.
 
 // Examples
-const music = {
-	content: {
-		acc: [
-			{ chord: "Em", position: 3 },
-			{ chord: "D", position: 19 },
-		],
-		lyrics: `Time to say goodbye`
-	},
-	type: 'music',
-	modifiers: ['chorus']
-}
-const title = {
-	type: 'declaration', subtype: { command: 'title', argument: 'Bohemian Rhapsody' }
-}
-const chorusInit = {
-	type: 'declaration', subtype: { command: 'start_of_chorus', argument: "" },
-}
-const comment = {
-	content: 'Chorus',
-	type: 'comment',
-}
+// const music = {
+// 	content: {
+// 		acc: [
+// 			{ chord: "Em", position: 3 },
+// 			{ chord: "D", position: 19 },
+// 		],
+// 		lyrics: `Time to say goodbye`
+// 	},
+// 	type: 'music',
+// 	modifiers: ['chorus']
+// }
+// const title = {
+// 	type: 'declaration', subtype: { command: 'title', argument: 'Bohemian Rhapsody' }
+// }
+// const chorusInit = {
+// 	type: 'declaration', subtype: { command: 'start_of_chorus', argument: "" },
+// }
+// const chorusInit = {
+// 	type: 'declaration', subtype: { command: 'start_of_chorus', argument: "" },
+// }
+//
 const exportedForTesting = {
 	parseDevComment,
 	replaceFirstOccurence,
@@ -220,6 +208,5 @@ const exportedForTesting = {
 	getDeclarationArguments,
 	parseDeclarationSubtype,
 	getMusicLine,
-
 }
 module.exports = { exportedForTesting, parseSong }

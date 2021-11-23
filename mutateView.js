@@ -1,5 +1,6 @@
 const path = require('path');
 const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile } = require('./fileManager')
+const chordproToHTML = require('./parseSongHTML')
 
 async function openFile(textarea, file) {
 	// We save current content when we switch to a new file in textarea.
@@ -38,17 +39,41 @@ async function insertSongsIntoSidePanel(sidePanel, folder) {
 }
 
 function toViewMode() {
+	const textarea = document.getElementById("editor")
 	setButtonText("To Editor")
+	saveContentInTextarea(textarea);
+	addHTMLToViewDiv()
+	showViewDiv()
+}
+function showViewDiv() {
+	const editor = document.getElementById("editor")
+	const view = document.getElementById("view")
+	editor.classList.add('hide')
+	view.classList.remove('hide')
+}
+function addHTMLToViewDiv() {
+	const textarea = document.getElementById("editor")
+	const content = textarea.value;
+	const view = document.getElementById("view")
+	view.innerHTML = ""
+	const HTML = chordproToHTML(content)
+	view.appendChild(HTML)
 }
 function toEditorMode() {
 	setButtonText("To View")
+	showEditor()
+}
+function showEditor() {
+	const editor = document.getElementById("editor")
+	const view = document.getElementById("view")
+	editor.classList.remove('hide')
+	view.classList.add('hide')
 }
 function setupModeButton() {
 	const modeButton = document.getElementById("mode-button")
 	modeButton.addEventListener('click', () => machine.dispatch('switch'));
 }
 function setButtonText(text) {
-	console.log({ text, mode: machine.state })
 	const modeButton = document.getElementById("mode-button")
 	modeButton.innerText = text;
 }

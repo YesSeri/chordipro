@@ -1,4 +1,4 @@
-const { chordproComment, chordproData, chordproMinimalSong, chordproChorus, chordproDeclaration } = require("./data");
+const { chordproComment, chordproData, chordproMinimalSong, chordproChorus, chordproDeclaration } = require("./testData");
 
 const parser = require('./parser').exportedForTesting
 
@@ -29,7 +29,7 @@ test('returns lyrics and chord info', () => {
 	expect(parser.getMusicLine('Wh[E][Am]o y[Dm]o[Am]u')).toStrictEqual({
 		acc: [
 			{ chord: "E", position: 2 },
-			{ chord: "am", position: 2 },
+			{ chord: "Am", position: 2 },
 			{ chord: "Dm", position: 5 },
 			{ chord: "Am", position: 6 },
 		],
