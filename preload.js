@@ -1,8 +1,13 @@
 const { parseSong } = require("./chordpro/parser")
-const arr = parseSong("{title: Who are you}");
-console.log({ arr })
+const path = require('path');
+let folder = path.join(__dirname, 'songs')
+const { insertSongsIntoSidePanel } = require('./mutateView')
+const modeStateMachine = require('./stateMachine')
+
 
 window.addEventListener('DOMContentLoaded', () => {
-	const sidePanel = document.getElementById("side-panel")
-	sidePanel.innerText = 'aaa'
+	const sidePanel = document.getElementById("song-list");
+	const modeButton = document.getElementById("mode-button")
+	modeButton.addEventListener('click', () => modeStateMachine.dispatch('switch'));
+	insertSongsIntoSidePanel(sidePanel, folder);
 })

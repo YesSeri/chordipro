@@ -22,6 +22,9 @@ html {
 	max-width: 400px;
 	border: solid 1px blue;
 	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 #main-panel {
