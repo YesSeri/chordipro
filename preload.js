@@ -1,12 +1,7 @@
-const { parseSong } = require("./chordpro/parser")
 const path = require('path');
-let folder = path.join(__dirname, 'songs')
-const { insertSongsIntoSidePanel, setupModeButton } = require('./mutateView')
-const modeStateMachine = require('./stateMachine')
-
+const { insertSongsIntoSidePanel, setupButtons } = require('./mutateView')
 
 window.addEventListener('DOMContentLoaded', () => {
-	const sidePanel = document.getElementById("song-list");
-	insertSongsIntoSidePanel(sidePanel, folder);
-	setupModeButton();
+	insertSongsIntoSidePanel();
+	setupButtons();
 })

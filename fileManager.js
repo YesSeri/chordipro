@@ -36,6 +36,13 @@ function getCurrentFile() {
 	return file
 }
 
+let folder;
+function setCurrentFolder(newFolder) {
+	folder = newFolder
+}
+function getCurrentFolder() {
+	return folder
+}
 // async function test() {
 // const testFolder = path.join(__dirname, 'songs');
 // let files = await getFiles(testFolder);
@@ -46,4 +53,4 @@ function getCurrentFile() {
 // }
 // test();
 
-module.exports = { getFiles, getContent, saveFile, setCurrentFile, getCurrentFile }
+module.exports = { getFiles, getContent, saveFile, setCurrentFile, getCurrentFile, setCurrentFolder, getCurrentFolder }

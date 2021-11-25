@@ -1,6 +1,7 @@
 const path = require('path');
-const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile } = require('./fileManager')
+const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile, getCurrentFolder, setCurrentFolder } = require('./fileManager')
 const chordproToHTML = require('./parseSongHTML')
+const { ipcRenderer } = require('electron')
 
 async function openFile(textarea, file) {
 	// We save current content when we switch to a new file in textarea.
@@ -19,7 +20,10 @@ function saveContentInTextarea(textarea) {
 	saveFile(content, getCurrentFile());
 }
 
-async function insertSongsIntoSidePanel(sidePanel, folder) {
+async function insertSongsIntoSidePanel() {
+	const folder = getCurrentFolder();
+	const sidePanel = document.getElementById("song-list");
+	sidePanel.innerHTML = ""
 	if (!folder) {
 		console.log("Please choose folder.")
 		return;
@@ -27,12 +31,12 @@ async function insertSongsIntoSidePanel(sidePanel, folder) {
 	const files = await getFiles(folder);
 	files.forEach(file => {
 		const ext = path.extname(file)
-		console.log(ext)
+		const basename = path.basename(file, ext)
 		if (ext === '.chopro') {
 			const div = document.createElement('div');
-			div.innerText = path.basename(file, ext)
-			const textarea = document.getElementById("editor")
-			div.addEventListener('click', () => openFile(textarea, path.join(folder, file)))
+			div.innerText = basename;
+			const textarea = document.getElementById("editor");
+			div.addEventListener('click', () => openFile(textarea, path.join(folder, file)));
 			sidePanel.append(div);
 		}
 	});
@@ -69,10 +73,31 @@ function showEditor() {
 	editor.classList.remove('hide')
 	view.classList.add('hide')
 }
+function setupButtons() {
+	setupModeButton();
+	setupFolderButton();
+
+}
 function setupModeButton() {
 	const modeButton = document.getElementById("mode-button")
 	modeButton.addEventListener('click', () => machine.dispatch('switch'));
 }
+
+function setupFolderButton() {
+	const folderButton = document.getElementById("folder-button")
+	folderButton.addEventListener('click', () => {
+		ipcRenderer.send('select-dirs')
+	})
+
+}
+
+ipcRenderer.on('selected-dirs-reply', (event, dir) => {
+	if (!dir) {
+		return
+	}
+	setCurrentFolder(dir)
+	insertSongsIntoSidePanel();
+})
 function setButtonText(text) {
 	const modeButton = document.getElementById("mode-button")
 	modeButton.innerText = text;
@@ -110,4 +135,4 @@ const machine = {
 	},
 };
 
-module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, setupModeButton }
+module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, setupButtons }
