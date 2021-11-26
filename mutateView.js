@@ -5,27 +5,25 @@ const { ipcRenderer } = require('electron')
 
 async function openFile(textarea, file) {
 	// We save current content when we switch to a new file in textarea.
-	saveContentInTextarea(textarea)
+	saveContentInTextarea()
 	machine.dispatch('toEditor')
 	setCurrentFile(file)
 	const content = await getContent(file);
 	textarea.value = content;
 }
 
-function saveContentInTextarea(textarea) {
+function saveContentInTextarea() {
+	const textarea = document.getElementById("editor")
 	if (!getCurrentFile()) {
 		return
 	}
 	const content = textarea.value;
 	saveFile(content, getCurrentFile());
-	textarea.value = ""
-	console.log(textarea.value)
 }
 
 async function insertSongsIntoSidePanel() {
 	const folder = getCurrentFolder();
 	const sidePanel = document.getElementById("song-list");
-	console.log({ sidePanel })
 	sidePanel.innerHTML = ""
 	if (!folder) {
 		return;
@@ -45,9 +43,8 @@ async function insertSongsIntoSidePanel() {
 }
 
 function toViewMode() {
-	const textarea = document.getElementById("editor")
 	setButtonText("To Editor")
-	saveContentInTextarea(textarea);
+	saveContentInTextarea();
 	addHTMLToViewDiv()
 	showViewDiv()
 }
@@ -78,11 +75,15 @@ function showEditor() {
 function setupButtons() {
 	setupModeButton();
 	setupFolderButton();
-
+	setupSaveButton();
 }
 function setupModeButton() {
 	const modeButton = document.getElementById("mode-button")
 	modeButton.addEventListener('click', () => machine.dispatch('switch'));
+}
+function setupSaveButton() {
+	const saveButton = document.getElementById("save-button")
+	saveButton.addEventListener('click', () => saveContentInTextarea());
 }
 
 function setupFolderButton() {

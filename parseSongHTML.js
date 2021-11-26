@@ -17,7 +17,6 @@ module.exports = function (content) {
 			}
 		});
 
-	console.log(htmlArr)
 	let HTML = document.createElement('div');
 	htmlArr.forEach(el => {
 		HTML.appendChild(el);
@@ -97,13 +96,3 @@ function handleAcapella(el) {
 	p.innerText = el.content.lyrics;
 	return p;
 }
-// const song = {
-// 	acc: [
-// 		{ chord: "Em", position: 8 },
-// 		{ chord: "D", position: 19 },
-// 	],
-// 	lyrics: `Let it be, let it be`
-// };
-
-// createChordHTML(song.acc);
-// console.log(song.lyrics);
