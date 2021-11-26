@@ -11,5 +11,8 @@
 	"devDependencies": {
 		"electron": "^15.3.1",
 		"jest-electron": "^0.1.12"
+	},
+	"dependencies": {
+		"electron-store": "^8.0.1"
 	}
 }

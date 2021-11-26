@@ -18,14 +18,16 @@ function saveContentInTextarea(textarea) {
 	}
 	const content = textarea.value;
 	saveFile(content, getCurrentFile());
+	textarea.value = ""
+	console.log(textarea.value)
 }
 
 async function insertSongsIntoSidePanel() {
 	const folder = getCurrentFolder();
 	const sidePanel = document.getElementById("song-list");
+	console.log({ sidePanel })
 	sidePanel.innerHTML = ""
 	if (!folder) {
-		console.log("Please choose folder.")
 		return;
 	}
 	const files = await getFiles(folder);
@@ -95,6 +97,7 @@ ipcRenderer.on('selected-dirs-reply', (event, dir) => {
 	if (!dir) {
 		return
 	}
+	saveContentInTextarea();
 	setCurrentFolder(dir)
 	insertSongsIntoSidePanel();
 })
@@ -135,4 +138,13 @@ const machine = {
 	},
 };
 
-module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, setupButtons }
+function setupConnectionMain() {
+	ipcRenderer.send('get-folder')
+	ipcRenderer.on('get-folder-reply', (event, arg) => {
+		setCurrentFolder(arg)
+		insertSongsIntoSidePanel();
+	})
+
+}
+
+module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, setupButtons, setupConnectionMain }

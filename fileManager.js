@@ -1,5 +1,6 @@
 const fs = require('fs');
-const path = require('path');
+const { ipcRenderer } = require('electron')
+
 
 function getFiles(folder) {
 	return new Promise((resolve, reject) => {
@@ -23,7 +24,9 @@ function getContent(filePath) {
 }
 function saveFile(content, filePath) {
 	fs.writeFile(filePath, content, function (err) {
-		if (err) return console.log(err);
+		if (err) {
+			return console.log(err)
+		};
 		console.log(`Saved ${filePath}`);
 	});
 }
@@ -36,8 +39,12 @@ function getCurrentFile() {
 	return file
 }
 
+
 let folder;
+
 function setCurrentFolder(newFolder) {
+	// store.set('folder', newFolder);
+	ipcRenderer.send('set-folder', newFolder)
 	folder = newFolder
 }
 function getCurrentFolder() {

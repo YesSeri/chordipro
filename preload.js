@@ -1,7 +1,7 @@
-const path = require('path');
-const { insertSongsIntoSidePanel, setupButtons } = require('./mutateView')
+const { insertSongsIntoSidePanel, setupButtons, setupConnectionMain } = require('./mutateView')
 
 window.addEventListener('DOMContentLoaded', () => {
+	setupConnectionMain();
 	insertSongsIntoSidePanel();
 	setupButtons();
 })
