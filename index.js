@@ -3,8 +3,6 @@ const path = require('path')
 const Store = require('electron-store');
 const store = new Store();
 const prompt = require('electron-prompt');
-console.log(prompt)
-
 const { dialog, ipcMain } = require('electron')
 
 function createWindow() {
@@ -13,7 +11,7 @@ function createWindow() {
 		width: 1400,
 		height: 1400,
 		webPreferences: {
-			preload: path.join(__dirname, 'preload.js'),
+			preload: path.join(__dirname, 'preload', 'preload.js'),
 			nodeIntegration: true
 		}
 	})

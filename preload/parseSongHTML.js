@@ -1,4 +1,4 @@
-const { parseSong } = require('./chordpro/parser')
+const { parseSong } = require('../chordpro/parser')
 
 module.exports = function (content) {
 	const songArr = parseSong(content);

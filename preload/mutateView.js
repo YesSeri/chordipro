@@ -1,7 +1,6 @@
 const path = require('path');
 const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile, getCurrentFolder, setCurrentFolder, createNewFile } = require('./fileManager')
 const chordproToHTML = require('./parseSongHTML')
-// const { ipcRenderer } = require('electron')
 
 async function openFile(textarea, file) {
 	// We save current content when we switch to a new file in textarea.
@@ -105,6 +104,33 @@ function setButtonText(text) {
 }
 
 // A finite state machine to help with transitions between editor and view. Switch is used by button and toEditor when opening new file.
+// function setupConnectionMain() {
+// 	ipcRenderer.send('get-folder')
+// 	ipcRenderer.on('get-folder-reply', (event, arg) => {
+// 		setCurrentFolder(arg)
+// 		insertSongsIntoSidePanel();
+// 	})
+
+// 	ipcRenderer.on('selected-dirs-reply', (event, dir) => {
+// 		if (!dir) {
+// 			return
+// 		}
+// 		saveContentInTextarea();
+// 		setCurrentFolder(dir)
+// 		insertSongsIntoSidePanel();
+// 	})
+
+// 	ipcRenderer.on('prompt-name-reply', (event, arg) => {
+// 		const name = arg + '.chopro'
+// 		const filepath = path.join(getCurrentFolder(), name)
+// 		saveFile("", filepath)
+// 		insertSongsIntoSidePanel()
+// 		const textarea = document.getElementById("editor");
+// 		openFile(textarea, filepath)
+// 	})
+// }
+
+
 const machine = {
 	state: 'EDITOR',
 	transitions: {
@@ -136,30 +162,5 @@ const machine = {
 	},
 };
 
-// function setupConnectionMain() {
-// 	ipcRenderer.send('get-folder')
-// 	ipcRenderer.on('get-folder-reply', (event, arg) => {
-// 		setCurrentFolder(arg)
-// 		insertSongsIntoSidePanel();
-// 	})
 
-// 	ipcRenderer.on('selected-dirs-reply', (event, dir) => {
-// 		if (!dir) {
-// 			return
-// 		}
-// 		saveContentInTextarea();
-// 		setCurrentFolder(dir)
-// 		insertSongsIntoSidePanel();
-// 	})
-
-// 	ipcRenderer.on('prompt-name-reply', (event, arg) => {
-// 		const name = arg + '.chopro'
-// 		const filepath = path.join(getCurrentFolder(), name)
-// 		saveFile("", filepath)
-// 		insertSongsIntoSidePanel()
-// 		const textarea = document.getElementById("editor");
-// 		openFile(textarea, filepath)
-// 	})
-// }
-
-module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode }
+module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, machine }

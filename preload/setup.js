@@ -1,6 +1,7 @@
 const { createNewFile } = require('./fileManager')
 const { saveContentInTextarea, insertSongsIntoSidePanel } = require('./mutateView')
 const { setupGetFolderIpc, setupPromptNameIpc, setupSelectFolderIpc, getFolderIpc } = require('./ipc')
+const { machine } = require('./mutateView')
 
 function start() {
 	insertSongsIntoSidePanel();
@@ -43,4 +44,4 @@ function setupConnectionMain() {
 
 
 
-module.exports = { setupButtons, setupConnectionMain }
+module.exports = { start }

@@ -1,4 +1,6 @@
-const { saveFile, getCurrentFolder, setCurrentFolder, createNewFile } = require('./fileManager')
+const { saveFile, getCurrentFolder, setCurrentFolder } = require('./fileManager')
+const { insertSongsIntoSidePanel } = require('./mutateView')
+const { ipcRenderer } = require('electron')
 
 function getFolderIpc() {
 	ipcRenderer.send('select-dirs')
