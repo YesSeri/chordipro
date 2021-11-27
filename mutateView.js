@@ -1,5 +1,5 @@
 const path = require('path');
-const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile, getCurrentFolder, setCurrentFolder } = require('./fileManager')
+const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile, getCurrentFolder, setCurrentFolder, createNewFile } = require('./fileManager')
 const chordproToHTML = require('./parseSongHTML')
 const { ipcRenderer } = require('electron')
 
@@ -76,6 +76,7 @@ function setupButtons() {
 	setupModeButton();
 	setupFolderButton();
 	setupSaveButton();
+	setupNewButton();
 }
 function setupModeButton() {
 	const modeButton = document.getElementById("mode-button")
@@ -91,7 +92,11 @@ function setupFolderButton() {
 	folderButton.addEventListener('click', () => {
 		ipcRenderer.send('select-dirs')
 	})
+}
 
+function setupNewButton() {
+	const newButton = document.getElementById("new-button")
+	newButton.addEventListener('click', () => createNewFile());
 }
 
 ipcRenderer.on('selected-dirs-reply', (event, dir) => {

@@ -5,7 +5,6 @@ const store = new Store();
 
 const { dialog, ipcMain } = require('electron')
 
-
 function createWindow() {
 	const win = new BrowserWindow({
 		show: false,

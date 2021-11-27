@@ -38,7 +38,9 @@ function setCurrentFile(newFile) {
 function getCurrentFile() {
 	return file
 }
-
+function createNewFile() {
+	console.log("CREATING")
+}
 
 let folder;
 
@@ -60,4 +62,4 @@ function getCurrentFolder() {
 // }
 // test();
 
-module.exports = { getFiles, getContent, saveFile, setCurrentFile, getCurrentFile, setCurrentFolder, getCurrentFolder }
+module.exports = { getFiles, getContent, saveFile, setCurrentFile, getCurrentFile, setCurrentFolder, getCurrentFolder, createNewFile }
