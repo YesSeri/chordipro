@@ -84,7 +84,7 @@ function createChordHTML(acc) {
 }
 function createLyricHTML(lyrics) {
 	const p = document.createElement('p');
-	p.classList.add('chord-line')
+	p.classList.add('lyric-line')
 	p.innerText = lyrics;
 	return p;
 }

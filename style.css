@@ -2,16 +2,22 @@
 	box-sizing: border-box;
 }
 
+#song-list>div::before {
+	text-align: left;
+	content: "🗎 ";
+}
+
+#song-list>div {
+	margin: 3px 1px;
+}
+
+#song-list {}
+
 #editor {
 	height: 100%;
 	width: 100%;
 	resize: none;
-}
-
-#view {
-	font-family: monospace;
-	height: 100%;
-	width: 100%;
+	border: 1px solid grey;
 }
 
 .hide {
@@ -23,9 +29,14 @@ body {
 	margin: 0;
 }
 
+button {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 html {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	height: 100%;
-	text-align: center;
+	/* text-align: center; */
 }
 
 .comment {
@@ -39,18 +50,20 @@ html {
 }
 
 #side-panel {
-	max-width: 400px;
-	border: solid 1px blue;
-	height: 100%;
+
 	display: flex;
 	flex-direction: column;
 	/* justify-content: space-between; */
+
+	width: max(15vw, 120px);
+	resize: both;
+	overflow: auto;
 }
 
 #main-panel {
 	width: 100%;
-	border: solid 1px red;
 	text-align: left;
+
 }
 
 #wrapper {
@@ -66,4 +79,12 @@ h1, h2 {
 #button-container {
 	display: flex;
 	flex-direction: column;
+}
+
+.chord-line {
+	margin-bottom: 0;
+}
+
+.lyric-line {
+	margin-top: 0;
 }
