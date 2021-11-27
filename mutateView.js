@@ -1,7 +1,7 @@
 const path = require('path');
 const { getContent, getCurrentFile, getFiles, saveFile, setCurrentFile, getCurrentFolder, setCurrentFolder, createNewFile } = require('./fileManager')
 const chordproToHTML = require('./parseSongHTML')
-const { ipcRenderer } = require('electron')
+// const { ipcRenderer } = require('electron')
 
 async function openFile(textarea, file) {
 	// We save current content when we switch to a new file in textarea.
@@ -72,41 +72,33 @@ function showEditor() {
 	editor.classList.remove('hide')
 	view.classList.add('hide')
 }
-function setupButtons() {
-	setupModeButton();
-	setupFolderButton();
-	setupSaveButton();
-	setupNewButton();
-}
-function setupModeButton() {
-	const modeButton = document.getElementById("mode-button")
-	modeButton.addEventListener('click', () => machine.dispatch('switch'));
-}
-function setupSaveButton() {
-	const saveButton = document.getElementById("save-button")
-	saveButton.addEventListener('click', () => saveContentInTextarea());
-}
+// function setupButtons() {
+// 	setupModeButton();
+// 	setupFolderButton();
+// 	setupSaveButton();
+// 	setupNewButton();
+// }
+// function setupModeButton() {
+// 	const modeButton = document.getElementById("mode-button")
+// 	modeButton.addEventListener('click', () => machine.dispatch('switch'));
+// }
+// function setupSaveButton() {
+// 	const saveButton = document.getElementById("save-button")
+// 	saveButton.addEventListener('click', () => saveContentInTextarea());
+// }
 
-function setupFolderButton() {
-	const folderButton = document.getElementById("folder-button")
-	folderButton.addEventListener('click', () => {
-		ipcRenderer.send('select-dirs')
-	})
-}
+// function setupFolderButton() {
+// 	const folderButton = document.getElementById("folder-button")
+// 	folderButton.addEventListener('click', () => {
+// 		ipcRenderer.send('select-dirs')
+// 	})
+// }
 
-function setupNewButton() {
-	const newButton = document.getElementById("new-button")
-	newButton.addEventListener('click', () => createNewFile());
-}
+// function setupNewButton() {
+// 	const newButton = document.getElementById("new-button")
+// 	newButton.addEventListener('click', () => createNewFile());
+// }
 
-ipcRenderer.on('selected-dirs-reply', (event, dir) => {
-	if (!dir) {
-		return
-	}
-	saveContentInTextarea();
-	setCurrentFolder(dir)
-	insertSongsIntoSidePanel();
-})
 function setButtonText(text) {
 	const modeButton = document.getElementById("mode-button")
 	modeButton.innerText = text;
@@ -144,13 +136,30 @@ const machine = {
 	},
 };
 
-function setupConnectionMain() {
-	ipcRenderer.send('get-folder')
-	ipcRenderer.on('get-folder-reply', (event, arg) => {
-		setCurrentFolder(arg)
-		insertSongsIntoSidePanel();
-	})
+// function setupConnectionMain() {
+// 	ipcRenderer.send('get-folder')
+// 	ipcRenderer.on('get-folder-reply', (event, arg) => {
+// 		setCurrentFolder(arg)
+// 		insertSongsIntoSidePanel();
+// 	})
 
-}
+// 	ipcRenderer.on('selected-dirs-reply', (event, dir) => {
+// 		if (!dir) {
+// 			return
+// 		}
+// 		saveContentInTextarea();
+// 		setCurrentFolder(dir)
+// 		insertSongsIntoSidePanel();
+// 	})
 
-module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, setupButtons, setupConnectionMain }
+// 	ipcRenderer.on('prompt-name-reply', (event, arg) => {
+// 		const name = arg + '.chopro'
+// 		const filepath = path.join(getCurrentFolder(), name)
+// 		saveFile("", filepath)
+// 		insertSongsIntoSidePanel()
+// 		const textarea = document.getElementById("editor");
+// 		openFile(textarea, filepath)
+// 	})
+// }
+
+module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode }

@@ -1,7 +1,5 @@
-const { insertSongsIntoSidePanel, setupButtons, setupConnectionMain } = require('./mutateView')
+const { start } = require('./setup')
 
 window.addEventListener('DOMContentLoaded', () => {
-	setupConnectionMain();
-	insertSongsIntoSidePanel();
-	setupButtons();
+	start();
 })

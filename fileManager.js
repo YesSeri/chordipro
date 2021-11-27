@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { ipcRenderer } = require('electron')
 
-
 function getFiles(folder) {
 	return new Promise((resolve, reject) => {
 		fs.readdir(folder, (err, files) => {
@@ -39,7 +38,7 @@ function getCurrentFile() {
 	return file
 }
 function createNewFile() {
-	console.log("CREATING")
+	ipcRenderer.send('prompt-name');
 }
 
 let folder;
