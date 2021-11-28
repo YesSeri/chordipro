@@ -16,6 +16,7 @@ function setupButtons() {
 }
 function setupModeButton() {
 	const modeButton = document.getElementById("mode-button")
+	console.log({ modeButton })
 	modeButton.addEventListener('click', () => machine.dispatch('switch'));
 }
 function setupSaveButton() {

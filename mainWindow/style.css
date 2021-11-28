@@ -11,13 +11,20 @@
 	margin: 3px 1px;
 }
 
-#song-list {}
-
 #editor {
 	height: 100%;
 	width: 100%;
 	resize: none;
-	border: 1px solid grey;
+}
+
+.main-border {
+	border: 1px solid black;
+}
+
+#view {
+	overflow: auto;
+	width: 100%;
+	padding: 5px;
 }
 
 .hide {
@@ -47,23 +54,18 @@ html {
 
 .chorus {
 	border-left: solid 3px black;
+	padding-left: 5px;
 }
 
 #side-panel {
 
 	display: flex;
 	flex-direction: column;
-	/* justify-content: space-between; */
+	justify-content: space-between;
 
 	width: max(15vw, 120px);
 	resize: both;
 	overflow: auto;
-}
-
-#main-panel {
-	width: 100%;
-	text-align: left;
-
 }
 
 #wrapper {

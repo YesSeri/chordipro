@@ -3,27 +3,43 @@ const path = require('path')
 const Store = require('electron-store');
 const store = new Store();
 const prompt = require('electron-prompt');
-const { dialog, ipcMain } = require('electron')
+const { dialog, ipcMain } = require('electron');
 
-function createWindow() {
-	return new BrowserWindow({
+function createWindow(settings) {
+	console.log({ settings })
+	return new BrowserWindow(settings)
+}
+
+app.whenReady().then(() => {
+	const win = createWindow({
 		show: false,
 		width: 1400,
 		height: 1400,
 		webPreferences: {
-			preload: path.join(__dirname, 'preload', 'preload.js'),
+			preload: path.join(__dirname, 'mainWindow', 'preload.js'),
 			nodeIntegration: true
 		}
 	})
-}
-
-app.whenReady().then(() => {
-	const win = createWindow()
-
-	win.loadFile('index.html')
+	// Create a new worker window, to use for pdf printing. Should be invisible. 
+	win.loadFile(path.join(__dirname, 'mainWindow', 'index.html'))
 	win.once('ready-to-show', () => {
 		win.maximize()
 	})
+
+	// const workerWindow = new createWindow(
+	// 	{
+	// 		webPreferences: {
+	// 			// preload: path.join(__dirname, 'workerWindow', 'preload', 'preload.js'),
+	// 		}
+	// 	}
+	// );
+	// workerWindow.loadFile(path.join('workerWindow', 'index.html'))
+
+
+	// ipcMain.on('printPDF', async (event, arg) => {
+	// 	console.log(workerWindow)
+	// })
+
 	ipcMain.on('select-dirs', async (event, arg) => {
 		const result = await dialog.showOpenDialog(win, {
 			properties: ['openDirectory']
