@@ -54,12 +54,16 @@ function showViewDiv() {
 	view.classList.remove('hide')
 }
 function addHTMLToViewDiv() {
-	const textarea = document.getElementById("editor")
-	const content = textarea.value;
+	const html = getViewHtml();
 	const view = document.getElementById("view")
 	view.innerHTML = ""
-	const HTML = chordproToHTML(content)
-	view.appendChild(HTML)
+	view.appendChild(html)
+}
+
+function getViewHtml() {
+	const textarea = document.getElementById("editor")
+	const content = textarea.value;
+	return chordproToHTML(content)
 }
 function toEditorMode() {
 	setButtonText("To View")
@@ -163,4 +167,4 @@ const machine = {
 };
 
 
-module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, machine }
+module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, machine, getViewHtml }

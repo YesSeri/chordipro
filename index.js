@@ -6,7 +6,6 @@ const prompt = require('electron-prompt');
 const { dialog, ipcMain } = require('electron');
 
 function createWindow(settings) {
-	console.log({ settings })
 	return new BrowserWindow(settings)
 }
 
@@ -26,19 +25,20 @@ app.whenReady().then(() => {
 		win.maximize()
 	})
 
-	// const workerWindow = new createWindow(
-	// 	{
-	// 		webPreferences: {
-	// 			// preload: path.join(__dirname, 'workerWindow', 'preload', 'preload.js'),
-	// 		}
-	// 	}
-	// );
-	// workerWindow.loadFile(path.join('workerWindow', 'index.html'))
+	const workerWindow = new createWindow(
+		{
+			webPreferences: {
+				preload: path.join(__dirname, 'workerWindow', 'preload.js'),
+			}
+		}
+	);
+	workerWindow.loadFile(path.join('workerWindow', 'index.html'))
 
 
-	// ipcMain.on('printPDF', async (event, arg) => {
-	// 	console.log(workerWindow)
-	// })
+	ipcMain.on('export-pdf', async (event, arg) => {
+		console.log('export-pdf')
+		workerWindow.webContents.send('pdf-export-worker', arg)
+	})
 
 	ipcMain.on('select-dirs', async (event, arg) => {
 		const result = await dialog.showOpenDialog(win, {

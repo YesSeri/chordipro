@@ -1,16 +1,18 @@
 const { saveFile, getCurrentFolder, setCurrentFolder } = require('./fileManager')
-const { insertSongsIntoSidePanel } = require('./mutateView')
+const { insertSongsIntoSidePanel, getViewHtml } = require('./mutateView')
 const { ipcRenderer } = require('electron')
 
-function getFolderIpc() {
-	ipcRenderer.send('select-dirs')
-}
 function setupGetFolderIpc() {
 	ipcRenderer.send('get-folder')
 	ipcRenderer.on('get-folder-reply', (event, arg) => {
 		setCurrentFolder(arg)
 		insertSongsIntoSidePanel();
 	})
+}
+
+function exportPdf() {
+	const html = getViewHtml()
+	ipcRenderer.send('export-pdf', html.outerHTML);
 }
 function setupSelectFolderIpc() {
 	ipcRenderer.on('selected-dirs-reply', (event, dir) => {
@@ -33,4 +35,4 @@ function setupPromptNameIpc() {
 		openFile(textarea, filepath)
 	})
 }
-module.exports = { setupGetFolderIpc, setupPromptNameIpc, setupSelectFolderIpc, getFolderIpc }
+module.exports = { setupGetFolderIpc, setupPromptNameIpc, setupSelectFolderIpc, exportPdf }
