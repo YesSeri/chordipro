@@ -4,13 +4,14 @@ const Store = require('electron-store');
 const store = new Store();
 const prompt = require('electron-prompt');
 const { dialog, ipcMain } = require('electron');
+const fs = require('fs')
 
 function createWindow(settings) {
 	return new BrowserWindow(settings)
 }
 
 app.whenReady().then(() => {
-	const win = createWindow({
+	const mainWindow = createWindow({
 		show: false,
 		width: 1400,
 		height: 1400,
@@ -20,13 +21,39 @@ app.whenReady().then(() => {
 		}
 	})
 	// Create a new worker window, to use for pdf printing. Should be invisible. 
-	win.loadFile(path.join(__dirname, 'mainWindow', 'index.html'))
-	win.once('ready-to-show', () => {
-		win.maximize()
+	mainWindow.loadFile(path.join(__dirname, 'mainWindow', 'index.html'))
+	mainWindow.once('ready-to-show', () => {
+		mainWindow.maximize()
+	})
+
+	mainWindow.on('close', (e) => {
+		e.preventDefault();
+		const options = {
+			type: 'question',
+			buttons: ['Yes, please', 'No, thanks'],
+			defaultId: 0,
+			title: 'Question',
+			detail: 'You are about to exit the program. Remember to save.',
+			message: 'Do you want to save before exiting',
+		};
+		dialog.showMessageBox(mainWindow, options).then(data => {
+			if (data.response === 0) {
+				mainWindow.webContents.send('save-before-quit')
+			} else {
+				workerWindow.destroy();
+				mainWindow.destroy();
+			}
+		})
+	})
+
+	ipcMain.on('save-before-quit-reply', async (event, arg) => {
+		workerWindow.destroy();
+		mainWindow.destroy();
 	})
 
 	const workerWindow = new createWindow(
 		{
+			show: false,
 			webPreferences: {
 				preload: path.join(__dirname, 'workerWindow', 'preload.js'),
 			}
@@ -34,14 +61,25 @@ app.whenReady().then(() => {
 	);
 	workerWindow.loadFile(path.join('workerWindow', 'index.html'))
 
-
 	ipcMain.on('export-pdf', async (event, arg) => {
 		console.log('export-pdf')
 		workerWindow.webContents.send('pdf-export-worker', arg)
 	})
 
+	ipcMain.on('pdf-ready', async (event, arg) => {
+		const pdfPath = path.join(__dirname, 'pdf', 'temp.pdf')
+		workerWindow.webContents.printToPDF({}).then(data => {
+			fs.writeFile(pdfPath, data, (error) => {
+				if (error) throw error
+				console.log(`Wrote PDF successfully to ${pdfPath}`)
+			})
+		}).catch(error => {
+			console.log(`Failed to write PDF to ${pdfPath}: `, error)
+		})
+	})
+
 	ipcMain.on('select-dirs', async (event, arg) => {
-		const result = await dialog.showOpenDialog(win, {
+		const result = await dialog.showOpenDialog(mainWindow, {
 			properties: ['openDirectory']
 		})
 		event.reply('selected-dirs-reply', result.filePaths[0]);
@@ -60,6 +98,9 @@ app.whenReady().then(() => {
 
 
 })
+async function askSave() {
+
+}
 async function promptName() {
 	return new Promise((res, rej) => {
 		prompt({

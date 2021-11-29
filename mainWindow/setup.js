@@ -1,6 +1,6 @@
 const { createNewFile } = require('./fileManager')
 const { saveContentInTextarea, insertSongsIntoSidePanel } = require('./mutateView')
-const { setupGetFolderIpc, setupPromptNameIpc, setupSelectFolderIpc, exportPdf } = require('./ipc')
+const { setupGetFolderIpc, setupPromptNameIpc, setupSelectFolderIpc, setupExportPdf, setupSaveOnQuitIpc } = require('./ipc')
 const { machine } = require('./mutateView')
 
 function start() {
@@ -45,7 +45,8 @@ function setupConnectionMain() {
 	setupGetFolderIpc();
 	setupPromptNameIpc();
 	setupSelectFolderIpc();
-
+	setupExportPdf();
+	setupSaveOnQuitIpc();
 }
 
 

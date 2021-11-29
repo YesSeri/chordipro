@@ -167,4 +167,4 @@ const machine = {
 };
 
 
-module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, machine, getViewHtml }
+module.exports = { insertSongsIntoSidePanel, toViewMode, toEditorMode, machine, getViewHtml, saveContentInTextarea }
