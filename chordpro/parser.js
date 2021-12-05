@@ -86,13 +86,13 @@ function getDeclarationCommand(line) {
 	if (command === 'eoc' || command === 'end_of_chorus') {
 		return 'end_of_chorus';
 	}
-	if (command === 'title') {
-		return command
+	if (command === 'title' || command === 't') {
+		return 'title'
 	}
 	if (command === 'subtitle' || command === 'st') {
 		return 'subtitle'
 	}
-	if (command === 'c' || command === 'comment') {
+	if (command === 'comment' || command === 'c') {
 		return 'comment'
 	}
 }
