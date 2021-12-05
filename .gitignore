@@ -1,3 +1,5 @@
 node_modules
-songs
+songs/*
 pdf
+
+!songs/Let it be.chopro
